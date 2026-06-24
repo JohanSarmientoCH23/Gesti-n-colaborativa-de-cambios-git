@@ -74,7 +74,6 @@ Este proyecto es desarrollado como parte del taller práctico de Git y GitHub, s
 | `feature/instalacion` | Instalación | Guía de instalación del proyecto |
 | `feature/contribucion` | Contribución | Guía de contribución para desarrolladores |
 | `feature/buenas-practicas` | Buenas Prácticas | Documentación de estándares de desarrollo |
-| `experimental/buenas-practicas-avanzadas` | Investigación | Prácticas avanzadas experimentales |
 
 ---
 
