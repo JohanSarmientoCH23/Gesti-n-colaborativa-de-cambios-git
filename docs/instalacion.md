@@ -287,6 +287,29 @@ npm run db:reset
 
 ---
 
+## Actualizaciones
+
+Para actualizar EduCampus LMS a la última versión:
+
+```bash
+# Detener servicios actuales
+docker compose down
+
+# Actualizar código
+git pull origin main
+
+# Reconstruir contenedores
+docker compose up -d --build
+
+# Ejecutar migraciones pendientes
+docker compose exec api npm run db:migrate
+
+# Verificar versión
+curl http://localhost:3000/v1/version
+```
+
+---
+
 ## Solución de Problemas
 
 ### Puerto en uso
