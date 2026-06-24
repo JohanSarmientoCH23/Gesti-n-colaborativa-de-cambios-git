@@ -6,6 +6,35 @@ EduCampus LMS está compuesto por módulos funcionales independientes pero integ
 
 ---
 
+## Arquitectura Modular
+
+La arquitectura de EduCampus LMS sigue el patrón de **Dominio Impulsado por Diseño (DDD)** con **Microservicios** para garantizar escalabilidad, mantenibilidad y independencia de despliegue.
+
+### Principios de Diseño
+
+| Principio | Descripción | Aplicación |
+|-----------|-------------|------------|
+| **Alta Cohesión** | Cada módulo agrupa funcionalidades relacionadas | Módulo de Evaluaciones incluye banco de preguntas, calificación y reportes |
+| **Bajo Acoplamiento** | Comunicación vía eventos de dominio | Los módulos no dependen directamente unos de otros |
+| **Encapsulamiento** | Lógica de negocio privada | Solo se exponen interfaces públicas |
+| **Autonomía** | Despliegue independiente | Cada módulo puede escalarse por separado |
+
+### Flujo de Comunicación
+
+```
+┌─────────────┐    Eventos     ┌─────────────┐
+│  Módulo A   │───────────────▶│  Módulo B   │
+│ (Usuarios)  │◀───────────────│(Evaluaciones)│
+└─────────────┘    Respuestas  └─────────────┘
+        │                           │
+        │   ┌─────────────┐        │
+        └──▶│  Módulo C   │◀───────┘
+            │  (Reportes) │
+            └─────────────┘
+```
+
+---
+
 ## Módulos Principales
 
 ### 1. Módulo de Gestión de Usuarios (`user-management`)
