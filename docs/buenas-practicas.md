@@ -557,3 +557,36 @@ alerts:
     severity: critical
     notify: [slack-incidents, pagerduty]
 ```
+
+---
+
+## Checklist de Calidad
+
+Antes de cada release, verificar:
+
+### Código
+- [ ] Todos los tests pasan
+- [ ] Cobertura de código > 80%
+- [ ] Linting sin errores
+- [ ] Type check sin errores
+- [ ] No hay código duplicado significativo
+- [ ] No hay funciones con más de 50 líneas
+- [ ] No hay archivos con más de 500 líneas
+
+### Documentación
+- [ ] README actualizado
+- [ ] CHANGELOG actualizado
+- [ ] API docs generados
+- [ ] Comentarios en código crítico
+
+### Seguridad
+- [ ] No hay secrets en el código
+- [ ] Dependencias actualizadas
+- [ ] Auditoría de seguridad pasada
+- [ ] Rate limiting configurado
+
+### Rendimiento
+- [ ] Pruebas de carga realizadas
+- [ ] Consultas optimizadas
+- [ ] Caché configurado correctamente
+- [ ] Monitoreo activo
