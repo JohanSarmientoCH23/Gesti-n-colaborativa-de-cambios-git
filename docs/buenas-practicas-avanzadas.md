@@ -8,10 +8,11 @@ El patrón DDD se aplica en EduCampus LMS para gestionar la complejidad del domi
 
 **Estrategias de Diseño:**
 
-1. **Bounded Contexts**: Cada módulo define sus límites claros
+1. **Bounded Contexts**: Cada módulo define sus límites claros (nuevo contexto)
 2. **Ubiquitous Language**: Lenguaje compartido entre negocio y tecnología
 3. **Aggregates**: Consistencia transaccional dentro de un Aggregate Root
 4. **Domain Events**: Comunicación desacoplada entre Bounded Contexts
+5. **Sagas**: Orquestación de transacciones distribuidas
 
 ```typescript
 // Ejemplo de Aggregate Root
