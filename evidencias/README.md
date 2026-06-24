@@ -30,7 +30,6 @@ Este archivo indica todas las capturas de pantalla que debes tomar durante la re
 | 2.7 | `git branch feature/instalacion` | Creación de rama feature |
 | 2.8 | `git branch feature/contribucion` | Creación de rama feature |
 | 2.9 | `git branch feature/buenas-practicas` | Creación de rama feature |
-| 2.10 | `git branch experimental/buenas-practicas-avanzadas` | Creación de rama experimental |
 
 ### 3. Reto 1 — Push
 
@@ -81,7 +80,7 @@ Este archivo indica todas las capturas de pantalla que debes tomar durante la re
 
 | # | Comando / Acción | Descripción de la captura |
 |---|------------------|---------------------------|
-| 8.1 | `git log --oneline experimental/buenas-practicas-avanzadas` | Commits en rama experimental |
+| 8.1 | `git log --oneline feature/buenas-practicas` | Commits en rama feature |
 | 8.2 | `git cherry-pick <commit-hash>` | Cherry-pick del commit específico |
 | 8.3 | `git log --oneline` | Commit trasladado en la rama destino |
 
