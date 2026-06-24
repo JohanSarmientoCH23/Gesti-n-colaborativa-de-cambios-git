@@ -667,3 +667,264 @@ git push --force-with-lease origin feature/xxx
 3. **Documentar decisiones**: Usar ADRs para justificar decisiones técnicas significativas
 4. **Hacer retrospectivas**: Regularmente evaluar qué funciona y qué necesita mejorar
 5. **Invertir en aprendizaje**: Git es profundo; siempre hay algo nuevo por aprender
+
+---
+
+## Actividad Integradora Individual — Reflexión Técnica
+
+### 1. ¿Qué problema resuelve publicar cambios en un repositorio remoto?
+
+Publicar cambios en un repositorio remoto resuelve el problema de la **colaboración y persistencia del código**. Sin un repositorio remoto, cada desarrollador tendría su propia copia del proyecto de forma aislada, lo que haría imposible:
+
+- **Trabajo simultáneo**: Múltiples personas no podrían contribuir al mismo proyecto al mismo tiempo
+- **Historial centralizado**: No existiría una fuente única de verdad con el historial completo de cambios
+- ** backup del código**: Si la máquina local falla, todo el trabajo se perdería
+- **Code review**: No habría forma estructurada de revisar los cambios de otros antes de integrarlos
+- **Distribución**: No se podría compartir el código con usuarios que no estén en la misma red local
+
+El repositorio remoto actúa como un **punto de sincronización central** que permite que todo el equipo trabaje de forma coordinada, manteniendo un historial completo y verificable de todos los cambios realizados.
+
+---
+
+### 2. ¿Por qué es necesario traer cambios remotos antes de continuar trabajando?
+
+Traer cambios remotos antes de continuar es necesario por varias razones críticas:
+
+1. **Evitar trabajo sobre código obsoleto**: Si no se sincroniza, se puede estar desarrollando sobre una versión del código que ya no existe en el repositorio principal
+2. **Prevenir conflictos acumulados**: Cuanto más tiempo sin sincronizar, más difícil será resolver los conflictos cuando finalmente se integren los cambios
+3. **Mantener consistencia**: Otros miembros del equipo pueden haber hecho cambios que afectan módulos con los que se está trabajando
+4. **Dependencias actualizadas**: Las dependencias pueden haber sido actualizadas por otros desarrolladores
+5. **Correcciones de seguridad**: Puede haber patches de seguridad que deben aplicarse inmediatamente
+
+El proceso correcto es:
+```bash
+git fetch origin          # Obtener cambios sin modificar trabajo local
+git rebase origin/main    # Reorganizar trabajo local sobre cambios remotos
+```
+
+Esto garantiza que se trabaja siempre sobre la versión más reciente del código.
+
+---
+
+### 3. ¿Qué ventaja tiene reorganizar una rama antes de integrarla?
+
+Reorganizar una rama (usando `git rebase`) antes de integrarla tiene múltiples ventajas:
+
+| Ventaja | Descripción |
+|---------|-------------|
+| **Historial lineal** | Elimina merge commits innecesarios, haciendo el historial más fácil de leer |
+| **Commits atómicos** | Permite reorganizar, combinar o eliminar commits que no son relevantes |
+| **Resolución de conflictos gradual** | Los conflictos se resuelven commit por commit, no todos de golpe |
+| **Facilidad de bisect** | Un historial lineal facilita la búsqueda de bugs con `git bisect` |
+| **Revert sencillo** | Si se necesita revertir un cambio específico, es más fácil identificarlo |
+| **Comprensión clara** | El equipo puede entender la secuencia lógica de cambios |
+
+**Ejemplo:**
+```bash
+# Antes del rebase (historial completo con merge commits)
+* merge commit
+|\
+| * commit C
+| * commit B
+| * commit A
+* main
+
+# Después del rebase (historial lineal)
+* commit A' (reaplicado)
+* commit B' (reaplicado)
+* commit C' (reaplicado)
+* main
+```
+
+---
+
+### 4. ¿Por qué se producen los conflictos?
+
+Los conflictos de merge se producen cuando **dos ramas modifican las mismas líneas de un archivo** y Git no puede determinar automáticamente cuál versión es la correcta. Esto ocurre porque:
+
+1. **Cambios simultáneos**: Dos o más desarrolladores modifican el mismo archivo al mismo tiempo
+2. **Base común eliminada**: Se modifica una línea que también fue eliminada o renombrada por otro
+3. **Cambios en dependencias**: Se actualizan dependencias que afectan múltiples archivos
+4. **Archivos compartidos**: Archivos como `README.md`, `package.json` o archivos de configuración son modificados por múltiples personas
+
+**Los conflictos son naturales y esperados** en un entorno colaborativo. No son errores, sino señales de que el sistema de control de versiones está funcionando correctamente al detectar ambigüedades que requieren intervención humana.
+
+---
+
+### 5. ¿Cuál es el proceso lógico para resolver un conflicto correctamente?
+
+El proceso lógico para resolver conflictos sigue estos pasos:
+
+**Paso 1: Detectar el conflicto**
+```bash
+git status  # Muestra archivos con conflicto
+```
+
+**Paso 2: Entender ambas versiones**
+```bash
+git diff --ours archivo.txt    # Qué cambié yo
+git diff --theirs archivo.txt  # Qué cambió el otro
+```
+
+**Paso 3: Analizar el contexto**
+- Leer ambos cambios para entender la intención de cada versión
+- Determinar si se necesita uno, el otro o una combinación
+
+**Paso 4: Resolver manualmente**
+- Abrir el archivo en un editor
+- Eliminar los marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`)
+- Combinar la lógica de ambas versiones de forma coherente
+- Verificar que el resultado es correcto y funcional
+
+**Paso 5: Confirmar la resolución**
+```bash
+git add archivo.txt
+git commit -m "🔀 merge: resolver conflicto en archivo combinando versiones"
+```
+
+**Paso 6: Verificar**
+```bash
+git status  # Debe mostrar estado limpio
+npm test    # Ejecutar tests para confirmar que no se rompió nada
+```
+
+---
+
+### 6. ¿Por qué conviene limpiar commits antes de hacer un Pull Request?
+
+Limpiar commits antes de un PR es importante por varias razones:
+
+1. **Facilita el code review**: Los revisores pueden entender rápidamente qué se hizo y por qué
+2. **Historial navegable**: Otros desarrolladores pueden buscar cambios específicos en el futuro
+3. **Cherry-pick seguro**: Se pueden trasladar cambios individuales sin arrastrar basura
+4. **Rollback preciso**: Si algo falla, se puede revertir exactamente el cambio problemático
+5. **Documentación viva**: El historial de commits documenta la evolución del proyecto
+6. **Automatización**: Las herramientas de CI/CD pueden analizar el impacto de cambios específicos
+
+**Ejemplo de limpieza:**
+```bash
+# ANTES (commits sucios)
+git log --oneline
+a3f2c1d prueba
+b7e8a2c fix
+c4d9b3e agrego algo
+d2a1c4f otra cosa
+e8f3a1b funcionalidad básica
+
+# DESPUÉS (squash en un commit profesional)
+git log --oneline
+f9a2b3c ✨ feat(evaluaciones): implementar módulo de evaluaciones con banco de preguntas
+```
+
+---
+
+### 7. ¿Qué ventaja tiene aplicar solo un cambio específico desde otra rama?
+
+Aplicar solo un cambio específico (usando `git cherry-pick`) tiene ventajas significativas:
+
+1. **Precisión**: Se traslada exactamente el cambio necesario, no toda una rama
+2. **Estabilidad**: Se puede llevar una corrección específica sin arrastrar cambios experimentales
+3. **Hotfix rápido**: Un fix crítico puede llevarse a producción sin esperar a que toda la feature esté lista
+4. **Backport selectivo**: Se pueden trasladar correcciones a versiones anteriores sin integrar funcionalidades nuevas
+5. **Aislamiento de riesgos**: No se compromete la estabilidad de una rama con cambios no relacionados
+
+**Ejemplo práctico:**
+```bash
+# Quiero solo el commit de corrección de seguridad, no toda la feature
+git checkout main
+git cherry-pick abc1234  # Solo el fix de seguridad
+```
+
+Esto es especialmente útil en situaciones donde se necesita una corrección urgente pero no se quiere integrar todo el desarrollo de una feature.
+
+---
+
+### 8. ¿Qué riesgos existen al sobrescribir una rama remota?
+
+Sobrescribir una rama remota (`git push --force`) presenta riesgos graves:
+
+| Riesgo | Descripción | Severidad |
+|--------|-------------|-----------|
+| **Pérdida de commits** | Los commits de otros desarrolladores pueden ser eliminados del historial | Crítico |
+| **Historial roto** | Otros desarrolladores tendrán conflictos al hacer pull | Alto |
+| **PRs invalidados** | Los Pull Requests pueden quedar en estado inconsistente | Alto |
+| **Datos irrecuperables** | Si no se hizo backup, los commits eliminados pueden perderse para siempre | Crítico |
+| **Confianza erosionada** | El equipo pierde confianza en la integridad del repositorio | Medio |
+
+**Protección: Usar `--force-with-lease`**
+```bash
+# ❌ PELIGROSO: Force push sin verificación
+git push --force origin feature/mi-cambio
+
+# ✅ SEGURO: Force push con verificación
+git push --force-with-lease origin feature/mi-cambio
+```
+
+`--force-with-lease` verifica que la rama remota no tiene commits que no estén en el local. Si alguien más hizo push, el comando falla previniendo la pérdida de trabajo.
+
+**Regla de oro**: Nunca hacer force push en ramas compartidas (`main`, `develop`) sin comunicarse con todo el equipo primero.
+
+---
+
+### 9. ¿Qué buenas prácticas aplicaría en un proyecto real?
+
+En un proyecto real aplicaría las siguientes buenas prácticas:
+
+**Control de Versiones:**
+- Usar GitFlow o Trunk-Based Development según la madurez del equipo
+- Commits con formato Conventional Commits (emoji + tipo + descripción)
+- PRs obligatorios con mínimo 1 aprobación antes de merge
+- Branch protection en `main` y `develop`
+- Squash merge para mantener historial limpio
+
+**Calidad de Código:**
+- Linting y formateo automático (ESLint + Prettier)
+- Tests obligatorios con cobertura mínima del 80%
+- Code review detallado con checklist
+- Type checking estricto con TypeScript
+
+**Documentación:**
+- README claro con instrucciones de instalación y uso
+- CHANGELOG actualizado por versión
+- API docs generados automáticamente (OpenAPI/Swagger)
+- ADRs para decisiones de arquitectura significativas
+
+**Automatización:**
+- CI/CD con pipelines automáticos (GitHub Actions)
+- Dependabot para actualización de dependencias
+- Secret scanning para detectar credenciales
+- Branch protection rules
+
+**Comunicación:**
+- Daily standups para sincronización
+- Sprint planning y retrospectivas
+- Issue templates para reportes estandarizados
+- Post-mortems para incidentes
+
+---
+
+### 10. ¿Qué errores cometió durante el taller y cómo los solucionó?
+
+Durante el taller se presentaron los siguientes errores y se resolvieron así:
+
+**Error 1: Conflicto de merge en README.md**
+- **Descripción**: Al hacer merge de feature/documentacion-general en develop, Git reportó conflicto en README.md
+- **Causa**: Ambas ramas modificaron las mismas líneas sin sincronizar
+- **Solución**: Se abrió el archivo, se combinaron ambas versiones manualmente, se eliminaron los marcadores de conflicto y se confirmó la resolución con `git add` y `git commit`
+
+**Error 2: Push rechazado por cambios en el remoto**
+- **Descripción**: Al intentar push de feature/modulos, Git rechazó la operación porque develop tenía commits nuevos
+- **Causa**: No se había sincronizado con el remoto antes de push
+- **Solución**: Se ejecutó `git fetch origin` seguido de `git rebase origin/develop` para integrar los cambios y luego `git push`
+
+**Error 3: Cherry-pick con conflicto**
+- **Descripción**: Al cherry-pick un commit de experimental hacia feature/buenas-practicas, se produjo conflicto en buenas-practicas-avanzadas.md
+- **Causa**: Ambas ramas modificaron la misma sección del archivo
+- **Solución**: Se analizaron ambas versiones con `git diff --ours` y `--theirs`, se combinaron los cambios de forma coherente y se completó el cherry-pick con `git cherry-pick --continue`
+
+**Error 4: Squash incompleto**
+- **Descripción**: Al hacer squash, se omitió un commit que quedó separado
+- **Causa**: Se usó `pick` en lugar de `squash` en el editor de rebase
+- **Solución**: Se hizo `git rebase -i HEAD~2` nuevamente y se corrigió la selección de commits
+
+**Lección aprendida**: Siempre verificar el estado del repositorio antes de operar (`git status`), leer cuidadosamente los mensajes de error, y entender completamente las ramas antes de hacer merge, rebase o cherry-pick.
