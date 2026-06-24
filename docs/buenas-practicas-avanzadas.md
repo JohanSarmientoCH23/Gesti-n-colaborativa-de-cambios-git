@@ -6,12 +6,12 @@
 
 El patrón DDD se aplica en EduCampus LMS para gestionar la complejidad del dominio educativo:
 
-**Estrategias de Diseño:**
+**Estrategias de Diseño (Actualizado):**
 
-1. **Bounded Contexts**: Cada módulo define sus límites claros (nuevo contexto)
-2. **Ubiquitous Language**: Lenguaje compartido entre negocio y tecnología
-3. **Aggregates**: Consistencia transaccional dentro de un Aggregate Root
-4. **Domain Events**: Comunicación desacoplada entre Bounded Contexts
+1. **Bounded Contexts**: Cada módulo define sus límites claros y responsabilidades exclusivas (nuevo contexto)
+2. **Ubiquitous Language**: Lenguaje compartido entre negocio y tecnología, documentado en glosario
+3. **Aggregates**: Consistencia transaccional dentro de un Aggregate Root con validación de invariantes
+4. **Domain Events**: Comunicación desacoplada entre Bounded Contexts vía cola de mensajes
 5. **Sagas**: Orquestación de transacciones distribuidas
 
 ```typescript
@@ -407,63 +407,3 @@ Las prácticas avanzadas documentadas aquí representan el estado del arte en de
 5. **Calidad sostenible** con métricas automatizadas
 
 La adopción debe ser iterativa, comenzando por las áreas de mayor riesgo y valor.
-
----
-
-## DevSecOps
-
-### Pipeline de Seguridad Integrado
-
-```yaml
-# .github/workflows/security.yml
-name: Security Scan
-
-on: [push, pull_request]
-
-jobs:
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
-      
-      - name: Run Snyk security scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
-      - name: Run SonarCloud analysis
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-```
-
-### Secrets Management
-
-```typescript
-// Nunca hardcodear secrets
-// Usar Azure Key Vault, AWS Secrets Manager, o HashiCorp Vault
-
-import { SecretClient } from '@azure/keyvault-secrets';
-import { DefaultAzureCredential } from '@azure/identity';
-
-const credential = new DefaultAzureCredential();
-const client = new SecretClient(
-  'https://educampus-vault.vault.azure.net/',
-  credential
-);
-
-export async function getDatabasePassword(): Promise<string> {
-  const secret = await client.getSecret('db-password');
-  return secret.value;
-}
-```
