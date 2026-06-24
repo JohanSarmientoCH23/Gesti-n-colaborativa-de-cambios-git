@@ -497,6 +497,30 @@ Usar el template de GitHub Issues:
 
 ---
 
+## Programa de Mentoría
+
+Para nuevos contribuidores, ofrecemos un programa de mentoría que incluye:
+
+### Beneficios
+- **Sesiones 1:1** con contribuidores experimentados
+- **Code review detallado** con retroalimentación constructiva
+- **Acceso a documentación interna** y guías de onboarding
+- **Participación en reuniones del equipo** como observador
+
+### Requisitos
+- Compromiso mínimo de 3 meses
+- Disponibilidad de 4-6 horas semanales
+- Interés genuino en aprender y contribuir
+- Respeto por el código de conducta del proyecto
+
+### Cómo Unirse
+1. Abrir un issue con el título `[Mentoría] Interesado en contribuir`
+2. Compartir tu experiencia y áreas de interés
+3. Ser asignado a un mentor según compatibilidad
+4. Completar el onboarding de 2 semanas
+
+---
+
 ## Reconocimiento
 
 Las contribuciones serán reconocidas en:
