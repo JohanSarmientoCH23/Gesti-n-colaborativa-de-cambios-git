@@ -4,6 +4,10 @@
 
 EduCampus LMS es una plataforma de gestión de aprendizaje diseñada para instituciones educativas que buscan modernizar sus procesos académicos mediante tecnología de vanguardia. Este proyecto documenta la implementación de buenas prácticas de control de versiones y flujos de trabajo colaborativos utilizando Git y GitHub.
 
+### Misión
+
+Transformar la experiencia educativa mediante una plataforma digital integral que potencie el aprendizaje colaborativo, facilite la gestión académica y promueva la excelencia en la enseñanza-aprendizaje.
+
 ---
 
 ## Objetivo
